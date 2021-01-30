@@ -70,12 +70,24 @@ model = tf.keras.models.Sequential(
         tf.keras.layers.Dense(10),
     ]
 )
+
+
 model.compile(
     optimizer=tf.keras.optimizers.Adam(PARAMS["learning_rate"]),
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=[tf.keras.metrics.SparseCategoricalAccuracy()],
 )
 
+
+tf.keras.utils.plot_model(
+    model,
+    to_file="neptune_mnist_model_JB.png",
+    show_shapes=True,
+    show_layer_names=True,
+    rankdir="TB",
+    expand_nested=False,
+    dpi=96,
+)
 
 model.fit(
     ds_train,
