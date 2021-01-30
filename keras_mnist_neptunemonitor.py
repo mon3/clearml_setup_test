@@ -6,6 +6,7 @@ from __future__ import (
 )
 
 import datetime
+import json
 import os
 from tempfile import gettempdir
 
@@ -17,6 +18,9 @@ from mlxtend.data import loadlocal_mnist
 
 import neptune
 from neptunecontrib.monitoring.keras import NeptuneMonitor
+
+from utils import save_model_architecture_to_file
+
 
 PARAMS = {"batch_size": 128, "epochs": 6, "learning_rate": 0.001}
 
@@ -71,7 +75,6 @@ model = tf.keras.models.Sequential(
     ]
 )
 
-
 model.compile(
     optimizer=tf.keras.optimizers.Adam(PARAMS["learning_rate"]),
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -79,15 +82,9 @@ model.compile(
 )
 
 
-tf.keras.utils.plot_model(
-    model,
-    to_file="neptune_mnist_model_JB.png",
-    show_shapes=True,
-    show_layer_names=True,
-    rankdir="TB",
-    expand_nested=False,
-    dpi=96,
-)
+save_model_architecture_to_file(model, "neptune_mnist_model_JP_structure.json")
+neptune.log_artifact("neptune_mnist_model_JP_structure.json")
+
 
 model.fit(
     ds_train,
